@@ -46,8 +46,8 @@ val copy:
 
 val proxy:
   (module V1.CLOCK)
-  -> (module Mirage_flow_s.SHUTDOWNABLE with type flow = 'a) -> 'a
-  -> (module Mirage_flow_s.SHUTDOWNABLE with type flow = 'b) -> 'b
+  -> (module V1_LWT.FLOW with type flow = 'a) -> 'a
+  -> (module V1_LWT.FLOW with type flow = 'b) -> 'b
   -> unit -> [ `Ok of (CopyStats.t * CopyStats.t) | `Error of [ `Msg of string ] ] Lwt.t
 (** [proxy (module Clock) (module A) a (module B) b ()] proxies data between
     [a] and [b] until both sides close. If either direction encounters an error

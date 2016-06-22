@@ -1,5 +1,6 @@
 (*
  * Copyright (C) 2015 David Scott <dave.scott@unikernel.com>
+ * Copyright (C) 2016 Docker Inc
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,14 +16,11 @@
  *
  *)
 
-module type SHUTDOWNABLE = sig
+module type DISCONNECTABLE = sig
   include V1_LWT.FLOW
 
-  val shutdown_write: flow -> unit io
-  (** Close the [write] direction of the flow, flushing any buffered data and
-      causing future calls to [read] by the peer to return [`Eof]. *)
-
-  val shutdown_read: flow -> unit io
-  (** Close the [read] direction of the flow, such that future calls to [write]
-      by the peer will return [`Eof] *)
+  val disconnect: flow -> unit io
+  (** Close the flow and immediately release any local resources allocated for
+      it. This will drop any remaining in-flight data (see [close] for more
+      graceful shutdown) *)
 end
