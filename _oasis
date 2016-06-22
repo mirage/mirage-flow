@@ -1,6 +1,6 @@
 OASISFormat: 0.4
 Name:        mirage-flow
-Version:     1.1.0
+Version:     2.0.0
 Synopsis:    Mirage flow implementations
 Authors:     Thomas Gazagnaire, David Scott
 License:     ISC

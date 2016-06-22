@@ -1,3 +1,8 @@
+### 2.0.0 (2016-06-22)
+
+* Remove the `SHUTDOWNABLE` signature following clarification in `V1_LWT.FLOW`
+  that `close` is the moral equivalent of `Unix.shutdown`
+
 ### 1.1.0 (2016-01-27)
 
 * Add a new top-level interface `module Mirage_flow`. Existing `module Fflow`
