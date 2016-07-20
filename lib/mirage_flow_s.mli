@@ -14,15 +14,3 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  *)
-
-module type SHUTDOWNABLE = sig
-  include V1_LWT.FLOW
-
-  val shutdown_write: flow -> unit io
-  (** Close the [write] direction of the flow, flushing any buffered data and
-      causing future calls to [read] by the peer to return [`Eof]. *)
-
-  val shutdown_read: flow -> unit io
-  (** Close the [read] direction of the flow, such that future calls to [write]
-      by the peer will return [`Eof] *)
-end
