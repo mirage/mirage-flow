@@ -1,0 +1,6 @@
+test.native
+_build
+lib_test/_tests
+setup.data
+setup.log
+html.stamp
