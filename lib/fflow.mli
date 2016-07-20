@@ -28,11 +28,13 @@ type refill = Cstruct.t -> int -> int -> int Lwt.t
 (** The type for refill functions. *)
 
 val make:
-  ?close:(unit -> unit Lwt.t) -> ?input:refill -> ?output:refill -> unit -> flow
-(** [make ~close ~input ~output ()] is a flow using [input] to refill
+  ?close:(unit -> unit Lwt.t) ->
+  ?disconnect:(unit -> unit Lwt.t) ->
+  ?input:refill -> ?output:refill -> unit -> flow
+(** [make ~close ~disconnect ~input ~output ()] is a flow using [input] to refill
     its internal input buffer when needed and [output] to refill its
-    external output buffer. It is using [close] to eventually clean-up
-    other resources on close. *)
+    external output buffer. It is using [close] and [disconnect] to eventually clean-up
+    other resources on close and disconnect respectively. *)
 
 (** {1 String flows} *)
 

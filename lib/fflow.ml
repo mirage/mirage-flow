@@ -34,22 +34,23 @@ let rec iter fn = function
 
 type flow = {
   close: unit -> unit Lwt.t;
+  disconnect: unit -> unit Lwt.t;
   input: refill;
   output: refill;
   mutable buf: Cstruct.t;
-  mutable ic_closed: bool;
-  mutable oc_closed: bool;
+  mutable ic_eof: bool;
+  mutable oc_eof: bool;
 }
 
 let default_buffer_size = 4096
 
-let make ?(close=fun () -> Lwt.return_unit) ?input ?output () =
+let make ?(close=fun () -> Lwt.return_unit) ?(disconnect=fun () -> Lwt.return_unit) ?input ?output () =
   let buf = Cstruct.create default_buffer_size in
-  let ic_closed = input = None in
-  let oc_closed = output = None in
+  let ic_eof = input = None in
+  let oc_eof = output = None in
   let input = match input with None -> zero | Some x -> x in
   let output = match output with None -> zero | Some x -> x in
-  { close; input; output; buf; ic_closed; oc_closed; }
+  { close; disconnect; input; output; buf; ic_eof; oc_eof; }
 
 let input_fn len blit str =
   let str_off = ref 0 in
@@ -112,12 +113,12 @@ let refill ch =
 let err_eof = Lwt.return `Eof
 
 let read ch =
-  if ch.ic_closed then err_eof
+  if ch.ic_eof then err_eof
   else (
     refill ch;
     ch.input ch.buf 0 default_buffer_size >>= fun n ->
     if n = 0 then (
-      ch.ic_closed <- true;
+      ch.ic_eof <- true;
       Lwt.return `Eof;
     ) else (
       let ret = Cstruct.sub ch.buf 0 n in
@@ -128,7 +129,7 @@ let read ch =
   )
 
 let write ch buf =
-  if ch.oc_closed then err_eof
+  if ch.oc_eof then err_eof
   else (
     let len = Cstruct.len buf in
     let rec aux off =
@@ -136,7 +137,7 @@ let write ch buf =
       else (
         ch.output buf off (len - off) >>= fun n ->
         if n = 0 then (
-          ch.oc_closed <- true;
+          ch.oc_eof <- true;
           Lwt.return `Eof
         ) else aux (off+n)
       )
@@ -145,7 +146,7 @@ let write ch buf =
   )
 
 let writev ch bufs =
-  if ch.oc_closed then err_eof
+  if ch.oc_eof then err_eof
   else
     let rec aux = function
       | []   -> Lwt.return (`Ok ())
@@ -158,6 +159,10 @@ let writev ch bufs =
     aux bufs
 
 let close ch =
-  ch.ic_closed <- true;
-  ch.oc_closed <- true;
+  ch.oc_eof <- true;
   ch.close ()
+
+let disconnect ch =
+  ch.ic_eof <- true;
+  ch.oc_eof <- true;
+  ch.disconnect ()
