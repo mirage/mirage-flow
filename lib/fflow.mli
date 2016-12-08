@@ -16,9 +16,6 @@
 
 (** Function-based flows. *)
 
-type error = V1.Flow.error
-(** Type for errors. *)
-
 include V1_LWT.FLOW
 
 type refill = Cstruct.t -> int -> int -> int Lwt.t

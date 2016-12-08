@@ -20,6 +20,7 @@ depends: [
   "ocamlfind"  {build}
   "mirage-types" {>= "3.0.0"}
   "mirage-types-lwt" {>= "3.0.0"}
+  "mirage-runtime"
   "cstruct"
   "lwt" {>= "2.5.0"}
   "alcotest" {test}
