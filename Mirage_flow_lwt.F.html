@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Mirage_flow_lwt.Proxy.html">
+<link rel="Up" href="Mirage_flow_lwt.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Mirage_flow" rel="Chapter" href="Mirage_flow.html">
+<link title="Mirage_flow_lwt" rel="Chapter" href="Mirage_flow_lwt.html">
+<link title="Mirage_flow_unix" rel="Chapter" href="Mirage_flow_unix.html"><link title="String flows" rel="Section" href="#1_Stringflows">
+<link title="Cstruct buffers flows" rel="Section" href="#1_Cstructbuffersflows">
+<title>Mirage_flow_lwt.F</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Mirage_flow_lwt.Proxy.html" title="Mirage_flow_lwt.Proxy">Previous</a>
+&nbsp;<a class="up" href="Mirage_flow_lwt.html" title="Mirage_flow_lwt">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Mirage_flow_lwt.F.html">Mirage_flow_lwt.F</a></h1>
+
+<pre><span class="keyword">module</span> F: <code class="code"><span class="keyword">sig</span></code> <a href="Mirage_flow_lwt.F.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<br>
+In-memory, function-based flows.<br>
+
+<pre><span class="keyword">include</span> <a href="Mirage_flow_lwt.S.html">Mirage_flow_lwt.S</a></pre>
+
+<pre><span id="TYPErefill"><span class="keyword">type</span> <code class="type"></code>refill</span> = <code class="type">Cstruct.t -> int -> int -> int Lwt.t</code> </pre>
+<div class="info ">
+The type for refill functions.<br>
+</div>
+
+
+<pre><span id="VALmake"><span class="keyword">val</span> make</span> : <code class="type">?close:(unit -> unit Lwt.t) -><br>       ?input:<a href="Mirage_flow_lwt.F.html#TYPErefill">refill</a> -><br>       ?output:<a href="Mirage_flow_lwt.F.html#TYPErefill">refill</a> -> unit -> flow</code></pre><div class="info ">
+<code class="code">make&nbsp;~close&nbsp;~input&nbsp;~output&nbsp;()</code> is a flow using <code class="code">input</code> to
+      refill its internal input buffer when needed and <code class="code">output</code> to
+      refill its external output buffer. It is using <code class="code">close</code> to
+      eventually clean-up other resources on close.<br>
+</div>
+<br>
+<h1 id="1_Stringflows">String flows</h1><br>
+
+<pre><span id="VALinput_string"><span class="keyword">val</span> input_string</span> : <code class="type">string -> <a href="Mirage_flow_lwt.F.html#TYPErefill">refill</a></code></pre><div class="info ">
+<code class="code">input_string&nbsp;buf</code> is the refill function reading its inputs
+      from the string <code class="code">buf</code>.<br>
+</div>
+
+<pre><span id="VALoutput_bytes"><span class="keyword">val</span> output_bytes</span> : <code class="type">bytes -> <a href="Mirage_flow_lwt.F.html#TYPErefill">refill</a></code></pre><div class="info ">
+<code class="code">output_bytes&nbsp;buf</code> is the refill function writing its outputs in
+      the buffer <code class="code">buf</code>.<br>
+</div>
+
+<pre><span id="VALstring"><span class="keyword">val</span> string</span> : <code class="type">?input:string -> ?output:bytes -> unit -> flow</code></pre><div class="info ">
+The flow built using <a href="Mirage_flow_lwt.F.html#VALinput_string"><code class="code"><span class="constructor">Mirage_flow_lwt</span>.<span class="constructor">F</span>.input_string</code></a> and <a href="Mirage_flow_lwt.F.html#VALoutput_bytes"><code class="code"><span class="constructor">Mirage_flow_lwt</span>.<span class="constructor">F</span>.output_bytes</code></a>.<br>
+</div>
+
+<pre><span id="VALinput_strings"><span class="keyword">val</span> input_strings</span> : <code class="type">string list -> <a href="Mirage_flow_lwt.F.html#TYPErefill">refill</a></code></pre><div class="info ">
+<code class="code">input_strings&nbsp;bufs</code> is the refill function reading its inputs
+      from the list of buffers <code class="code">bufs</code>. Empty strings are ignored.<br>
+</div>
+
+<pre><span id="VALoutput_bytess"><span class="keyword">val</span> output_bytess</span> : <code class="type">bytes list -> <a href="Mirage_flow_lwt.F.html#TYPErefill">refill</a></code></pre><div class="info ">
+<code class="code">output_bytess&nbsp;buf</code> is the refill function writing its outputs in
+      the list of buffers <code class="code">buf</code>. Empty strings are ignored.<br>
+</div>
+
+<pre><span id="VALstrings"><span class="keyword">val</span> strings</span> : <code class="type">?input:string list -> ?output:bytes list -> unit -> flow</code></pre><div class="info ">
+The flow built using <a href="Mirage_flow_lwt.F.html#VALinput_strings"><code class="code"><span class="constructor">Mirage_flow_lwt</span>.<span class="constructor">F</span>.input_strings</code></a> and <a href="Mirage_flow_lwt.F.html#VALoutput_bytess"><code class="code"><span class="constructor">Mirage_flow_lwt</span>.<span class="constructor">F</span>.output_bytess</code></a>.<br>
+</div>
+<br>
+<h1 id="1_Cstructbuffersflows">Cstruct buffers flows</h1><br>
+
+<pre><span id="VALinput_cstruct"><span class="keyword">val</span> input_cstruct</span> : <code class="type">Cstruct.t -> <a href="Mirage_flow_lwt.F.html#TYPErefill">refill</a></code></pre><div class="info ">
+Same as <a href="Mirage_flow_lwt.F.html#VALinput_string"><code class="code"><span class="constructor">Mirage_flow_lwt</span>.<span class="constructor">F</span>.input_string</code></a> but for <code class="code"><span class="constructor">Cstruct</span>.t</code> buffers.<br>
+</div>
+
+<pre><span id="VALoutput_cstruct"><span class="keyword">val</span> output_cstruct</span> : <code class="type">Cstruct.t -> <a href="Mirage_flow_lwt.F.html#TYPErefill">refill</a></code></pre><div class="info ">
+Same as <code class="code">output_string</code> buf for <code class="code"><span class="constructor">Cstruct</span>.t</code> buffers.<br>
+</div>
+
+<pre><span id="VALcstruct"><span class="keyword">val</span> cstruct</span> : <code class="type">?input:Cstruct.t -> ?output:Cstruct.t -> unit -> flow</code></pre><div class="info ">
+Same as <a href="Mirage_flow_lwt.F.html#VALstring"><code class="code"><span class="constructor">Mirage_flow_lwt</span>.<span class="constructor">F</span>.string</code></a> but for <code class="code"><span class="constructor">Cstruct</span>.t</code> buffers.<br>
+</div>
+
+<pre><span id="VALinput_cstructs"><span class="keyword">val</span> input_cstructs</span> : <code class="type">Cstruct.t list -> <a href="Mirage_flow_lwt.F.html#TYPErefill">refill</a></code></pre><div class="info ">
+Same as <a href="Mirage_flow_lwt.F.html#VALinput_strings"><code class="code"><span class="constructor">Mirage_flow_lwt</span>.<span class="constructor">F</span>.input_strings</code></a> but for <code class="code"><span class="constructor">Cstruct</span>.t</code> buffers.<br>
+</div>
+
+<pre><span id="VALoutput_cstructs"><span class="keyword">val</span> output_cstructs</span> : <code class="type">Cstruct.t list -> <a href="Mirage_flow_lwt.F.html#TYPErefill">refill</a></code></pre><div class="info ">
+Same as <code class="code">output_strings</code> but for <code class="code"><span class="constructor">Cstruct</span>.t</code> buffers.<br>
+</div>
+
+<pre><span id="VALcstructs"><span class="keyword">val</span> cstructs</span> : <code class="type">?input:Cstruct.t list -> ?output:Cstruct.t list -> unit -> flow</code></pre><div class="info ">
+Same as <a href="Mirage_flow_lwt.F.html#VALstrings"><code class="code"><span class="constructor">Mirage_flow_lwt</span>.<span class="constructor">F</span>.strings</code></a> but for <code class="code"><span class="constructor">Cstruct</span>.t</code> buffers.<br>
+</div>
+</body></html>

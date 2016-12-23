@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Mirage_flow_lwt.Copy.html">
+<link rel="next" href="Mirage_flow_lwt.F.html">
+<link rel="Up" href="Mirage_flow_lwt.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Mirage_flow" rel="Chapter" href="Mirage_flow.html">
+<link title="Mirage_flow_lwt" rel="Chapter" href="Mirage_flow_lwt.html">
+<link title="Mirage_flow_unix" rel="Chapter" href="Mirage_flow_unix.html"><title>Mirage_flow_lwt.Proxy</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Mirage_flow_lwt.Copy.html" title="Mirage_flow_lwt.Copy">Previous</a>
+&nbsp;<a class="up" href="Mirage_flow_lwt.html" title="Mirage_flow_lwt">Up</a>
+&nbsp;<a class="post" href="Mirage_flow_lwt.F.html" title="Mirage_flow_lwt.F">Next</a>
+</div>
+<h1>Functor <a href="type_Mirage_flow_lwt.Proxy.html">Mirage_flow_lwt.Proxy</a></h1>
+
+<pre><span class="keyword">module</span> Proxy: <div class="sig_block"><code class="code"><span class="keyword">functor</span>&nbsp;(</code><code class="code"><span class="constructor">Clock</span></code><code class="code">&nbsp;:&nbsp;</code><code class="type">Mirage_clock.MCLOCK</code><code class="code">)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;</code><div class="sig_block"><code class="code"><span class="keyword">functor</span>&nbsp;(</code><code class="code"><span class="constructor">A</span></code><code class="code">&nbsp;:&nbsp;</code><code class="type"><a href="Mirage_flow_lwt.SHUTDOWNABLE.html">SHUTDOWNABLE</a></code><code class="code">)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;</code><div class="sig_block"><code class="code"><span class="keyword">functor</span>&nbsp;(</code><code class="code"><span class="constructor">B</span></code><code class="code">&nbsp;:&nbsp;</code><code class="type"><a href="Mirage_flow_lwt.SHUTDOWNABLE.html">SHUTDOWNABLE</a></code><code class="code">)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;</code><code class="code"><span class="keyword">sig</span></code> <a href="Mirage_flow_lwt.Proxy.html">..</a> <code class="code"><span class="keyword">end</span></code></div></div></div></pre><table border="0" cellpadding="3" width="100%">
+<tr>
+<td align="left" valign="top" width="1%%"><b>Parameters: </b></td>
+<td>
+<table class="paramstable">
+<tr>
+<td align="center" valign="top" width="15%">
+<code>Clock</code></td>
+<td align="center" valign="top">:</td>
+<td><code class="type">Mirage_clock.MCLOCK</code>
+<tr>
+<td align="center" valign="top" width="15%">
+<code>A</code></td>
+<td align="center" valign="top">:</td>
+<td><code class="type"><a href="Mirage_flow_lwt.SHUTDOWNABLE.html">SHUTDOWNABLE</a></code>
+<tr>
+<td align="center" valign="top" width="15%">
+<code>B</code></td>
+<td align="center" valign="top">:</td>
+<td><code class="type"><a href="Mirage_flow_lwt.SHUTDOWNABLE.html">SHUTDOWNABLE</a></code>
+</table>
+</td>
+</tr>
+</table>
+<hr width="100%">
+
+<pre><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> </pre>
+<div class="info ">
+The type for proxy errors.<br>
+</div>
+
+
+<pre><span id="VALpp_error"><span class="keyword">val</span> pp_error</span> : <code class="type"><a href="Mirage_flow_lwt.Proxy.html#TYPEerror">error</a> Fmt.t</code></pre><div class="info ">
+<code class="code">pp_error</code> pretty-prints errors.<br>
+</div>
+
+<pre><span id="VALproxy"><span class="keyword">val</span> proxy</span> : <code class="type">Clock.t -><br>       A.flow -><br>       B.flow -><br>       (<a href="Mirage_flow.html#TYPEstats">Mirage_flow.stats</a> * <a href="Mirage_flow.html#TYPEstats">Mirage_flow.stats</a>, <a href="Mirage_flow_lwt.Proxy.html#TYPEerror">error</a>)<br>       Result.result Lwt.t</code></pre><div class="info ">
+<code class="code">proxy&nbsp;clock&nbsp;a&nbsp;b</code> proxies data between <code class="code">a</code> and <code class="code">b</code> until both
+      sides close. If either direction encounters an error then so
+      will <code class="code">proxy</code>. If both directions succeed, then return I/O
+      statistics.<br>
+</div>
+</body></html>
