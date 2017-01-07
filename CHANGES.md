@@ -1,7 +1,7 @@
 ### 1.2.0 (2016-12-21)
 
-* Import `V1.FLOW` from `mirage-types` into `Mirage_flow.S` (@samoht)
-* Import `V1_LWT.FLOW` from `mirage-types-lwt` into `Mirage_flow_lwt.S` (@samoht)
+* Import `Mirage_types.FLOW` from `mirage-types` into `Mirage_flow.S` (@samoht)
+* Import `Mirage_types_lwt.FLOW` from `mirage-types-lwt` into `Mirage_flow_lwt.S` (@samoht)
 * Rename the existing `Mirage_flow` into `Mirage_flow_lwt` (@samoht)
 * Rename `Lwt_io_flow` into `Mirage_flow_unix` (@samoht)
 
