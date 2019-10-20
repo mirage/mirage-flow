@@ -11,11 +11,11 @@ depends: [
   "dune" {>= "1.0"}
   "fmt"
   "logs"
-  "mirage-flow" {>= "2.0.0"}
+  "mirage-flow" {= version}
   "lwt" {>= "4.4.0"}
-  "cstruct" {>= "3.2.0"}
+  "cstruct" {>= "4.0.0"}
   "alcotest" {with-test}
-  "mirage-flow-combinators" {with-test & >= "2.0.0"}
+  "mirage-flow-combinators" {with-test & = version}
 ]
 build: [
   ["dune" "subst"] {pinned}

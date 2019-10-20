@@ -14,7 +14,7 @@ depends: [
   "logs"
   "cstruct" {>= "4.0.0"}
   "mirage-clock" {>= "3.0.0"}
-  "mirage-flow" {>= "2.0.0"}
+  "mirage-flow" {= version}
 ]
 build: [
   ["dune" "subst"] {pinned}
