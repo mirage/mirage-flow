@@ -198,7 +198,8 @@ module F = struct
   type refill = Cstruct.t -> int -> int -> int Lwt.t
 
   type error
-  let pp_error ppf (_:error) = Fmt.string ppf "Mirage_flow_lwt.Fun.error"
+  let pp_error ppf (_:error) =
+    Fmt.string ppf "Mirage_flow_combinators.F.error"
   type write_error = Mirage_flow.write_error
   let pp_write_error = Mirage_flow.pp_write_error
 
