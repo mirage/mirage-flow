@@ -13,7 +13,6 @@ depends: [
   "fmt"
   "lwt" {>= "4.4.0"}
 ]
-conflicts: [ "mirage-flow-lwt" ]
 build: [
   ["dune" "subst"] {pinned}
   ["dune" "build" "-p" name "-j" jobs]

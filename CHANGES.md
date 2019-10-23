@@ -1,7 +1,8 @@
-### v2.0.0
+### v2.0.0 (2019-10-23)
 
-* mirage-flow uses Lwt.t and Cstruct.t directly
-* mirage-flow-lwt was removed, combinators are now in mirage-flow-combinators
+* mirage-flow uses Lwt.t and Cstruct.t directly (#43 @hannesm)
+* mirage-flow-lwt was removed, combinators are now in mirage-flow-combinators (#43 @hannesm)
+* raise lower OCaml bound to 4.06.0 (#43 @hannesm)
 
 ### v1.6.0 (2019-04-24)
 
