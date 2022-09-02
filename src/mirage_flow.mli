@@ -83,6 +83,13 @@ module type S = sig
       connection is now closed and therefore the data could not be
       written.  Other errors are possible. *)
 
+  val shutdown : flow -> [ `read | `write | `read_write ] -> unit Lwt.t
+  (** [shutdown flow mode] shuts down the [flow] for the specific [mode]:
+      A flow which is [shutdown `read] (or [`read_write] will never be [read]
+      again (future calls will return [`Eof]); a flow which is [shutdown `write]
+      (or [`read_write]) flushes all pending writes and signals the remote
+      endpoint there won't be any future [write]. In TCP, a FIN is sent. *)
+
   val close: flow -> unit Lwt.t
   (** [close flow] flushes all pending writes and signals the remote
       endpoint that there will be no future writes. Once the remote endpoint
