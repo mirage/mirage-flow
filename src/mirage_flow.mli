@@ -91,21 +91,8 @@ module type S = sig
       endpoint there won't be any future [write]. In TCP, a FIN is sent. *)
 
   val close: flow -> unit Lwt.t
-  (** [close flow] flushes all pending writes and signals the remote
-      endpoint that there will be no future writes. Once the remote endpoint
-      has read all pending data, it is expected that calls to [read] on
-      the remote return [`Eof].
-
-      Note it is still possible for the remote endpoint to [write] to
-      the flow and for the local endpoint to call [read]. This state where
-      the local endpoint has called [close] but the remote endpoint
-      has not called [close] is similar to that of a half-closed TCP
-      connection or a Unix socket after [shutdown(SHUTDOWN_WRITE)].
-
-      [close flow] waits until the remote endpoint has also called [close]
-      before returning. At this point no data can flow in either direction
-      and resources associated with the flow can be freed.
-      *)
+  (** [close flow] terminates the [flow] and frees all associated data. Any
+      subsequent [read] or [write] will return an error. *)
 end
 
 (** {1 Copy stats} *)
