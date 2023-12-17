@@ -1,3 +1,9 @@
+### v4.0.0 (2023-12-17)
+
+- Add ``shutdown : flow -> [ `read | `write | `read_write ] -> unit Lwt.t``
+  (@djs55 @hannesm #16 #18 #48)
+- Remove SHUTDOWNABLE signature (@djs55 #17, rebased into #48)
+
 ### v3.0.0 (2021-11-14)
 
 - Remove Mirage_flow_lwt module (#47 @hannesm)
