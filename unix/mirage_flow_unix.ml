@@ -122,6 +122,14 @@ module Fd = struct
 
   let close t = Lwt_unix.close t
 
+  let shutdown t mode =
+    let cmd = Lwt_unix.(match mode with
+        | `read -> SHUTDOWN_RECEIVE
+        | `write -> SHUTDOWN_SEND
+        | `read_write -> SHUTDOWN_ALL)
+    in
+    Lwt.return (Lwt_unix.shutdown t cmd)
+
   let writev t bs =
     Lwt.catch (fun () ->
         Lwt_list.iter_s (fun b -> write_all t (Cstruct.to_bytes b)) bs

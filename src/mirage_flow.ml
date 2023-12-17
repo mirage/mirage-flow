@@ -36,6 +36,7 @@ module type S = sig
   val read: flow -> (Cstruct.t or_eof, error) result Lwt.t
   val write: flow -> Cstruct.t -> (unit, write_error) result Lwt.t
   val writev: flow -> Cstruct.t list -> (unit, write_error) result Lwt.t
+  val shutdown : flow -> [ `read | `write | `read_write ] -> unit Lwt.t
   val close: flow -> unit Lwt.t
 end
 

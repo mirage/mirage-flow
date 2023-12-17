@@ -49,13 +49,8 @@ module Concrete (S: Mirage_flow.S) = struct
   let read t = S.read t >|= lift_read
   let write t b = S.write t b >|= lift_write
   let writev t bs = S.writev t bs >|= lift_write
+  let shutdown t m = S.shutdown t m
   let close t = S.close t
-end
-
-module type SHUTDOWNABLE = sig
-  include Mirage_flow.S
-  val shutdown_write: flow -> unit Lwt.t
-  val shutdown_read: flow -> unit Lwt.t
 end
 
 type time = int64
@@ -141,7 +136,7 @@ struct
 
 end
 
-module Proxy (Clock: Mirage_clock.MCLOCK) (A: SHUTDOWNABLE) (B: SHUTDOWNABLE) =
+module Proxy (Clock: Mirage_clock.MCLOCK) (A: Mirage_flow.S) (B: Mirage_flow.S) =
 struct
 
   module A_to_B = Copy(Clock)(A)(B)
@@ -164,8 +159,8 @@ struct
     let a2b =
       let t = A_to_B.start a b in
       A_to_B.wait t >>= fun result ->
-      A.shutdown_read a >>= fun () ->
-      B.shutdown_write b >|= fun () ->
+      A.shutdown a `read >>= fun () ->
+      B.shutdown b `write >|= fun () ->
       let stats = stats t in
       match result with
       | Ok ()   -> Ok stats
@@ -174,8 +169,8 @@ struct
     let b2a =
       let t = B_to_A.start b a in
       B_to_A.wait t >>= fun result ->
-      B.shutdown_read b >>= fun () ->
-      A.shutdown_write a >|= fun () ->
+      B.shutdown b `read >>= fun () ->
+      A.shutdown a `write >|= fun () ->
       let stats = stats t in
       match result with
       | Ok ()   -> Ok stats
@@ -329,6 +324,15 @@ module F = struct
       in
       aux bufs
 
+  let shutdown ch mode =
+    (match mode with
+     | `read -> ch.ic_closed <- true
+     | `write -> ch.oc_closed <- true
+     | `read_write ->
+       ch.ic_closed <- true;
+       ch.oc_closed <- true);
+    Lwt.return_unit
+
   let close ch =
     ch.ic_closed <- true;
     ch.oc_closed <- true;
@@ -357,6 +361,7 @@ let read (Flow (_, (module F), flow)) = F.read flow
 let write (Flow (_, (module F), flow)) b = F.write flow b
 let writev (Flow (_, (module F), flow)) b = F.writev flow b
 let close (Flow (_, (module F), flow)) = F.close flow
+let shutdown (Flow (_, (module F), flow)) m = F.shutdown flow m
 let pp ppf (Flow (name, _, _)) = Fmt.string ppf name
 
 let forward ?(verbose=false) ~src ~dst () =

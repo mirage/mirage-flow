@@ -32,20 +32,6 @@ module type CONCRETE =  Mirage_flow.S
     errors into concrete error types. *)
 module Concrete (S: Mirage_flow.S): CONCRETE with type flow = S.flow
 
-(** {1 Shutdownable flows} *)
-module type SHUTDOWNABLE = sig
-  include Mirage_flow.S
-
-  val shutdown_write: flow -> unit Lwt.t
-  (** Close the [write] direction of the flow, flushing any buffered
-      data and causing future calls to [read] by the peer to return
-      [`Eof]. *)
-
-  val shutdown_read: flow -> unit Lwt.t
-  (** Close the [read] direction of the flow, such that future calls
-      to [write] by the peer will return [`Eof] *)
-end
-
 module Copy (Clock: Mirage_clock.MCLOCK) (A: Mirage_flow.S) (B: Mirage_flow.S): sig
 
   type error = [`A of A.error | `B of B.write_error]
@@ -62,7 +48,7 @@ module Copy (Clock: Mirage_clock.MCLOCK) (A: Mirage_flow.S) (B: Mirage_flow.S): 
 
 end
 
-module Proxy (Clock: Mirage_clock.MCLOCK) (A: SHUTDOWNABLE) (B: SHUTDOWNABLE):
+module Proxy (Clock: Mirage_clock.MCLOCK) (A: Mirage_flow.S) (B: Mirage_flow.S):
 sig
 
   type error
