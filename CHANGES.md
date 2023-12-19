@@ -1,5 +1,7 @@
-### v4.0.0 (2023-12-17)
+### v4.0.0 (2023-12-19)
 
+- Redefine `close` semantics, which no longer is a `` shutdown `read_write ``
+  (#49 @hannesm)
 - Add ``shutdown : flow -> [ `read | `write | `read_write ] -> unit Lwt.t``
   (@djs55 @hannesm #16 #18 #48)
 - Remove SHUTDOWNABLE signature (@djs55 #17, rebased into #48)
