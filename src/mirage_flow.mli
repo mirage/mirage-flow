@@ -92,7 +92,9 @@ module type S = sig
 
   val close: flow -> unit Lwt.t
   (** [close flow] terminates the [flow] and frees all associated data. Any
-      subsequent [read] or [write] will return an error. *)
+      subsequent [read] or [write] will return an error. A subsequent [close]
+      will not do anything (esp. not raising an exception), but it may log an
+      error. *)
 end
 
 (** {1 Copy stats} *)
