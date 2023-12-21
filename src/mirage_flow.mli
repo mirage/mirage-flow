@@ -60,17 +60,21 @@ module type S = sig
       The returned buffer will be of a size convenient to the flow
       implementation, but will always have at least 1 byte.
 
-      When [read] returns [`Eof] or an error, the [flow] should be [close]d (or
-      [shutdown]ed) by the client. Once [read] returned [`Eof] or an error, no
-      subsequent [read] call will be successful. *)
+      When [read] returns [`Eof] or an error, [close] (or [shutdown]) should be
+      called on the [flow] by the client. Once [read] returned [`Eof] or an
+      error, no subsequent [read] call will be successful. *)
 
   val write: flow -> Cstruct.t -> (unit, write_error) result Lwt.t
   (** [write flow buffer] writes a buffer to the flow. There is no indication
-      when the buffer has actually been read and, therefore, it must not be
+      when the buffer has actually been sent and, therefore, it must not be
       reused. The contents may be transmitted in separate packets, depending on
       the underlying transport. The result [Ok ()] indicates success,
       [Error `Closed] indicates that the connection is now closed and therefore
       the data could not be written. Other errors are possible.
+
+      The call to [write] blocks until the buffer has been accepted by the
+      implementation (if a partial write occured, write will wait until the
+      remainder of the buffer has been accepted by the implementation).
 
       If [write] returns an error, [close] (or [shutdown]) should be called on
       the [flow] by the client. Once [write] returned an error, no subsequent
