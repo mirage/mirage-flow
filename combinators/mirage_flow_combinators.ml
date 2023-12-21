@@ -21,6 +21,40 @@ open Lwt.Infix
 let src = Logs.Src.create "mirage-flow-combinators"
 module Log = (val Logs.src_log src : Logs.LOG)
 
+type stats = {
+  read_bytes: int64;
+  read_ops: int64;
+  write_bytes: int64;
+  write_ops: int64;
+  duration: int64;
+}
+
+let kib = 1024L
+let ( ** ) = Int64.mul
+let mib = kib ** 1024L
+let gib = mib ** 1024L
+let tib = gib ** 1024L
+
+let suffix = [
+  kib, "KiB";
+  mib, "MiB";
+  gib, "GiB";
+  tib, "TiB";
+]
+
+let add_suffix x =
+  List.fold_left (fun acc (y, label) ->
+      if Int64.div x y > 0L
+      then Printf.sprintf "%.1f %s" Int64.((to_float x) /. (to_float y)) label
+      else acc
+    ) (Printf.sprintf "%Ld bytes" x) suffix
+
+let pp_stats ppf s =
+  Fmt.pf ppf "%s bytes at %s/nanosec and %Lu IOPS/nanosec"
+    (add_suffix s.read_bytes)
+    (add_suffix Int64.(div s.read_bytes s.duration))
+    (Int64.div s.read_ops s.duration)
+
 module type CONCRETE =  Mirage_flow.S
   with type error = [ `Msg of string ]
    and type write_error = [ Mirage_flow.write_error | `Msg of string ]
@@ -55,7 +89,7 @@ end
 
 type time = int64
 
-type 'a stats = {
+type 'a stats_lwt = {
   read_bytes: int64 ref;
   read_ops: int64 ref;
   write_bytes: int64 ref;
@@ -66,15 +100,15 @@ type 'a stats = {
   t: (unit, 'a) result Lwt.t;
 }
 
-let stats t =
+let stats_lwt t =
   let duration : int64 = match !(t.finish) with
     | None -> Int64.sub (t.time ()) t.start
     | Some x -> Int64.sub x t.start
   in {
-    Mirage_flow.read_bytes = !(t.read_bytes);
-    read_ops               = !(t.read_ops);
-    write_bytes            = !(t.write_bytes);
-    write_ops              = !(t.write_ops);
+    read_bytes  = !(t.read_bytes);
+    read_ops    = !(t.read_ops);
+    write_bytes = !(t.write_bytes);
+    write_ops   = !(t.write_ops);
     duration;
   }
 
@@ -131,7 +165,7 @@ struct
   let copy ~src:a ~dst:b =
     let t = start a b in
     wait t >|= function
-    | Ok ()   -> Ok (stats t)
+    | Ok ()   -> Ok (stats_lwt t)
     | Error e -> Error e
 
 end
@@ -161,7 +195,7 @@ struct
       A_to_B.wait t >>= fun result ->
       A.shutdown a `read >>= fun () ->
       B.shutdown b `write >|= fun () ->
-      let stats = stats t in
+      let stats = stats_lwt t in
       match result with
       | Ok ()   -> Ok stats
       | Error e -> Error e
@@ -171,7 +205,7 @@ struct
       B_to_A.wait t >>= fun result ->
       B.shutdown b `read >>= fun () ->
       A.shutdown a `write >|= fun () ->
-      let stats = stats t in
+      let stats = stats_lwt t in
       match result with
       | Ok ()   -> Ok stats
       | Error e -> Error e

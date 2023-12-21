@@ -96,17 +96,3 @@ module type S = sig
       will not do anything (esp. not raising an exception), but it may log an
       error. *)
 end
-
-(** {1 Copy stats} *)
-
-type stats = {
-  read_bytes: int64;
-  read_ops: int64;
-  write_bytes: int64;
-  write_ops: int64;
-  duration: int64;
-}
-(** The type for I/O statistics from a copy operation. *)
-
-val pp_stats: stats Fmt.t
-(** [pp_stats] is the pretty-printer for flow stats. *)

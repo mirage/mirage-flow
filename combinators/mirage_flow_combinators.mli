@@ -22,6 +22,20 @@
 
     {e Release %%VERSION%% } *)
 
+(** {1 Copy stats} *)
+
+type stats = {
+  read_bytes: int64;
+  read_ops: int64;
+  write_bytes: int64;
+  write_ops: int64;
+  duration: int64;
+}
+(** The type for I/O statistics from a copy operation. *)
+
+val pp_stats: stats Fmt.t
+(** [pp_stats] is the pretty-printer for flow stats. *)
+
 (** [CONCRETE] expose the private row as [`Msg str] errors, using
     [pp_error] and [pp_write_error]. *)
 module type CONCRETE =  Mirage_flow.S
@@ -40,7 +54,7 @@ module Copy (Clock: Mirage_clock.MCLOCK) (A: Mirage_flow.S) (B: Mirage_flow.S): 
   val pp_error: error Fmt.t
   (** [pp_error] pretty-prints errors. *)
 
-  val copy: src:A.flow -> dst:B.flow -> (Mirage_flow.stats, error) result Lwt.t
+  val copy: src:A.flow -> dst:B.flow -> (stats, error) result Lwt.t
   (** [copy source destination] copies data from [source] to
       [destination] using the clock to compute a transfer rate. On
       successful completion, some statistics are returned. On failure we
@@ -58,7 +72,7 @@ sig
   (** [pp_error] pretty-prints errors. *)
 
   val proxy: A.flow -> B.flow ->
-    ((Mirage_flow.stats * Mirage_flow.stats), error) result Lwt.t
+    ((stats * stats), error) result Lwt.t
   (** [proxy a b] proxies data between [a] and [b] until both
       sides close. If either direction encounters an error then so
       will [proxy]. If both directions succeed, then return I/O
