@@ -98,10 +98,7 @@ module type S = sig
       [shutdown `write] (or [`read_write]) flushes all pending writes and
       signals the remote endpoint there won't be any future [write] or [writev]
       calls (subsequent calls will return [`Closed]). E.g. in TCP, the
-      signalling is done by sending a segment with the FIN flag.
-
-      If this [flow] is layered upon another [flow'] (e.g. TLS over TCP),
-      [shutdown] on the underlying [flow'] is executed. *)
+      signalling is done by sending a segment with the FIN flag. *)
 
   val close: flow -> unit Lwt.t
   (** [close flow] terminates the [flow] and frees all associated data. Any
