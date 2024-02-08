@@ -73,7 +73,7 @@ module type S = sig
       the data could not be written. Other errors are possible.
 
       The call to [write] blocks until the buffer has been accepted by the
-      implementation (if a partial write occured, write will wait until the
+      implementation (if a partial write occured, [write] will wait until the
       remainder of the buffer has been accepted by the implementation).
 
       If [write] returns an error, [close] (or [shutdown]) should be called on
@@ -82,10 +82,14 @@ module type S = sig
 
   val writev: flow -> Cstruct.t list -> (unit, write_error) result Lwt.t
   (** [writev flow buffers] writes a sequence of buffers to the flow. There is
-      no indication when the buffers have actually been read and, therefore,
+      no indication when the buffers have actually been sent and, therefore,
       they must not be reused. The result [Ok ()] indicates success,
       [Error `Closed] indicates that the connection is now closed and therefore
       the data could not be written. Other errors are possible.
+
+      The call to [writev] blocks until the buffers have been accepted by the
+      implementation (if a partial write occured, [writev] will wait until all
+      buffers have been accepted by the implementation).
 
       If [writev] returns an error, [close] (or [shutdown]) should be called on
       the [flow] by the client. Once [writev] returned an error, no subsequent
