@@ -1,3 +1,9 @@
+### v4.0.2 (2024-02-08)
+
+- revert < coercion, shutdown is again
+  ``shutdown : flow -> [ `read | `write | `read_write ] -> unit Lwt.t``
+  (@reynir @hannesm)
+
 ### v4.0.1 (2024-02-08)
 
 - move Mirage_flow.stats and pp_stats to Mirage_flow_combinators (#51 @hannesm)
