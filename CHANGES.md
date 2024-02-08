@@ -1,3 +1,13 @@
+### v4.0.1 (2024-02-08)
+
+- move Mirage_flow.stats and pp_stats to Mirage_flow_combinators (#51 @hannesm)
+- improve documentation of expected semantics (when write promise is resolved,
+  what is done to the underlying flow - addresses #4 @samoht),
+  (#51 @reynir @dinosaure @hannesm)
+- add < coercion to shutdown:
+  ``shutdown : flow -> [< `read | `write | `read_write ] -> unit Lwt.t``
+  (requested #50 @reynir, #52 @hannesm)
+
 ### v4.0.0 (2023-12-19)
 
 - Redefine `close` semantics, which no longer is a `` shutdown `read_write ``
