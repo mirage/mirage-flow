@@ -39,37 +39,3 @@ module type S = sig
   val shutdown : flow -> [ `read | `write | `read_write ] -> unit Lwt.t
   val close: flow -> unit Lwt.t
 end
-
-type stats = {
-  read_bytes: int64;
-  read_ops: int64;
-  write_bytes: int64;
-  write_ops: int64;
-  duration: int64;
-}
-
-let kib = 1024L
-let ( ** ) = Int64.mul
-let mib = kib ** 1024L
-let gib = mib ** 1024L
-let tib = gib ** 1024L
-
-let suffix = [
-  kib, "KiB";
-  mib, "MiB";
-  gib, "GiB";
-  tib, "TiB";
-]
-
-let add_suffix x =
-  List.fold_left (fun acc (y, label) ->
-      if Int64.div x y > 0L
-      then Printf.sprintf "%.1f %s" Int64.((to_float x) /. (to_float y)) label
-      else acc
-    ) (Printf.sprintf "%Ld bytes" x) suffix
-
-let pp_stats ppf s =
-  Fmt.pf ppf "%s bytes at %s/nanosec and %Lu IOPS/nanosec"
-    (add_suffix s.read_bytes)
-    (add_suffix Int64.(div s.read_bytes s.duration))
-    (Int64.div s.read_ops s.duration)
