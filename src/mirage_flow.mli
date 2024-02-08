@@ -95,7 +95,7 @@ module type S = sig
       the [flow] by the client. Once [writev] returned an error, no subsequent
       [writev] or [write] call will be successful. *)
 
-  val shutdown : flow -> [ `read | `write | `read_write ] -> unit Lwt.t
+  val shutdown : flow -> [< `read | `write | `read_write ] -> unit Lwt.t
   (** [shutdown flow mode] shuts down the [flow] for the specific [mode]:
       A flow which is [shutdown `read] (or [`read_write]) will never be [read]
       again (subsequent calls will return [`Eof]); a flow which is
