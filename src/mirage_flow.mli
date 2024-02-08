@@ -72,7 +72,7 @@ module type S = sig
       [Error `Closed] indicates that the connection is now closed and therefore
       the data could not be written. Other errors are possible.
 
-      The call to [write] blocks until the buffer has been accepted by the
+      The promise is resolved when the buffer has been accepted by the
       implementation (if a partial write occured, [write] will wait until the
       remainder of the buffer has been accepted by the implementation).
 
@@ -87,7 +87,7 @@ module type S = sig
       [Error `Closed] indicates that the connection is now closed and therefore
       the data could not be written. Other errors are possible.
 
-      The call to [writev] blocks until the buffers have been accepted by the
+      The promise is resolved when the buffers have been accepted by the
       implementation (if a partial write occured, [writev] will wait until all
       buffers have been accepted by the implementation).
 
@@ -102,7 +102,11 @@ module type S = sig
       [shutdown `write] (or [`read_write]) flushes all pending writes and
       signals the remote endpoint there won't be any future [write] or [writev]
       calls (subsequent calls will return [`Closed]). E.g. in TCP, the
-      signalling is done by sending a segment with the FIN flag. *)
+      signalling is done by sending a segment with the FIN flag.
+
+      If this [flow] is layered upon another [flow'] (e.g. TLS over TCP),
+      and the internal state after [shutdown] is [`Closed], [close] on the
+      underlying [flow'] is executed. *)
 
   val close: flow -> unit Lwt.t
   (** [close flow] terminates the [flow] and frees all associated data. Any
