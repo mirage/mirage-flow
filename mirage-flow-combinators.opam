@@ -13,7 +13,7 @@ depends: [
   "lwt" {>= "4.0.0"}
   "logs"
   "cstruct" {>= "6.0.0"}
-  "mirage-clock" {>= "3.0.0"}
+  "mirage-mtime" {>= "4.0.0"}
   "mirage-flow" {= version}
 ]
 build: [

@@ -46,7 +46,7 @@ module type CONCRETE =  Mirage_flow.S
     errors into concrete error types. *)
 module Concrete (S: Mirage_flow.S): CONCRETE with type flow = S.flow
 
-module Copy (Clock: Mirage_clock.MCLOCK) (A: Mirage_flow.S) (B: Mirage_flow.S): sig
+module Copy (A: Mirage_flow.S) (B: Mirage_flow.S): sig
 
   type error = [`A of A.error | `B of B.write_error]
   (** The type for copy errors. *)
@@ -62,7 +62,7 @@ module Copy (Clock: Mirage_clock.MCLOCK) (A: Mirage_flow.S) (B: Mirage_flow.S): 
 
 end
 
-module Proxy (Clock: Mirage_clock.MCLOCK) (A: Mirage_flow.S) (B: Mirage_flow.S):
+module Proxy (A: Mirage_flow.S) (B: Mirage_flow.S):
 sig
 
   type error
