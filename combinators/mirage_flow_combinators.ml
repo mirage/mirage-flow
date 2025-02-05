@@ -112,7 +112,7 @@ let stats_lwt t =
     duration;
   }
 
-module Copy (Clock: Mirage_clock.MCLOCK) (A: Mirage_flow.S) (B: Mirage_flow.S) =
+module Copy (A: Mirage_flow.S) (B: Mirage_flow.S) =
 struct
 
   type error = [`A of A.error | `B of B.write_error]
@@ -127,14 +127,14 @@ struct
     let write_bytes = ref 0L in
     let write_ops = ref 0L in
     let finish = ref None in
-    let start = Clock.elapsed_ns () in
+    let start = Mirage_mtime.elapsed_ns () in
     let rec loop () =
       A.read a >>= function
       | Error e ->
-        finish := Some (Clock.elapsed_ns ());
+        finish := Some (Mirage_mtime.elapsed_ns ());
         Lwt.return (Error (`A e))
       | Ok `Eof ->
-        finish := Some (Clock.elapsed_ns ());
+        finish := Some (Mirage_mtime.elapsed_ns ());
         Lwt.return (Ok ())
       | Ok (`Data buffer) ->
         read_ops := Int64.succ !read_ops;
@@ -146,7 +146,7 @@ struct
           write_bytes := Int64.(add !write_bytes (of_int @@ Cstruct.length buffer));
           loop ()
         | Error e ->
-          finish := Some (Clock.elapsed_ns ());
+          finish := Some (Mirage_mtime.elapsed_ns ());
           Lwt.return (Error (`B e))
     in
     {
@@ -156,7 +156,7 @@ struct
       write_ops;
       finish;
       start;
-      time = (fun () -> Clock.elapsed_ns ());
+      time = (fun () -> Mirage_mtime.elapsed_ns ());
       t = loop ();
     }
 
@@ -170,11 +170,11 @@ struct
 
 end
 
-module Proxy (Clock: Mirage_clock.MCLOCK) (A: Mirage_flow.S) (B: Mirage_flow.S) =
+module Proxy (A: Mirage_flow.S) (B: Mirage_flow.S) =
 struct
 
-  module A_to_B = Copy(Clock)(A)(B)
-  module B_to_A = Copy(Clock)(B)(A)
+  module A_to_B = Copy(A)(B)
+  module B_to_A = Copy(B)(A)
 
   type error = [
     | `A of A_to_B.error

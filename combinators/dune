@@ -1,5 +1,5 @@
 (library
  (name mirage_flow_combinators)
  (public_name mirage-flow-combinators)
- (libraries lwt cstruct mirage-flow mirage-clock logs)
+ (libraries lwt cstruct mirage-flow mirage-mtime logs)
  (wrapped false))
