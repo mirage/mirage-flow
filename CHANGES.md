@@ -1,3 +1,8 @@
+### v5.0.0 (2025-02-05)
+
+- Remove functor over Mirage_clock.MCLOCK, use mirage-mtime instead
+  (#53 @hannesm)
+
 ### v4.0.2 (2024-02-08)
 
 - revert < coercion, shutdown is again
